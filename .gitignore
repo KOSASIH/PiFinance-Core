@@ -1,2 +1,43 @@
-# Google App Engine generated folder
-appengine-generated/
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# Build output
+dist/
+build/
+
+# Coverage reports
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Docker files
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# CI/CD files
+.circleci/
+.github/
+Jenkinsfile
+
+# Miscellaneous
+*.tgz
+*.zip
