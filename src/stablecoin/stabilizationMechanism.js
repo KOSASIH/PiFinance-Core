@@ -1,18 +1,18 @@
 const priceOracle = require('./priceOracle');
 const stablecoinManager = require('./stablecoinService');
 const logger = require('../utils/logger'); // Assuming you have a logger utility
-const config = require('../config/envConfig'); // Assuming you have a config file
+const { PI_COIN } = require('../constants'); // Importing constants
 
 class StabilizationMechanism {
     constructor() {
-        this.targetPrice = 314159.00; // Target price for the stablecoin ($314,159.00)
-        this.priceThreshold = 0.05; // Price deviation threshold (5%)
+        this.targetPrice = PI_COIN.VALUE; // Target price for the stablecoin ($314,159.00)
+        this.priceThreshold = PI_COIN.STABILITY_THRESHOLD; // Price deviation threshold (5%)
     }
 
     // Check the current price of the stablecoin
     async checkCurrentPrice() {
         try {
-            const currentPrice = await priceOracle.getPrice('your-stablecoin-id'); // Replace with actual stablecoin ID
+            const currentPrice = await priceOracle.getPrice(PI_COIN.SYMBOL); // Use the symbol from constants
             logger.info('Current stablecoin price:', currentPrice);
             return currentPrice;
         } catch (error) {
@@ -49,13 +49,11 @@ class StabilizationMechanism {
 
     // Calculate the amount to mint based on price deviation
     calculateMintAmount(deviation) {
-        // Example logic: Mint an amount proportional to the deviation
         return Math.floor(deviation * 1000); // Adjust the multiplier as needed
     }
 
     // Calculate the amount to burn based on price deviation
     calculateBurnAmount(deviation) {
-        // Example logic: Burn an amount proportional to the deviation
         return Math.floor(deviation * 1000); // Adjust the multiplier as needed
     }
 
