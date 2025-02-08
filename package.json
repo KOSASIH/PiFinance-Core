@@ -1,0 +1,55 @@
+{
+  "name": "PiFinance-Core",
+  "version": "1.0.0",
+  "description": "A decentralized finance application for stablecoin management.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "build": "webpack --config webpack.config.js",
+    "prettify": "prettier --write '**/*.js'",
+    "coverage": "jest --coverage"
+  },
+  "keywords": [
+    "decentralized",
+    "finance",
+    "stablecoin",
+    "blockchain",
+    "cryptocurrency"
+  ],
+  "author": "KOSASIH",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9",
+    "prom-client": "^13.0.0",
+    "nodemailer": "^6.4.11",
+    "winston": "^3.3.3",
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "redis": "^3.1.2"
+  },
+  "devDependencies": {
+    "jest": "^26.6.0",
+    "eslint": "^7.11.0",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "webpack": "^5.24.2",
+    "webpack-cli": "^4.5.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "homepage": "https://github.com/KOSASIH/PiFinance-Core#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KOSASIH/PiFinance-Core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KOSASIH/PiFinance-Core/issues"
+  },
+  "homepage": "https://github.com/KOSASIH/PiFinance-Core#readme"
+}
