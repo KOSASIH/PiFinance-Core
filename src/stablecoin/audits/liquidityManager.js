@@ -1,67 +1,77 @@
 // src/stablecoin/audits/liquidityManager.js
 
-const priceOracle = require('./priceOracle');
-const stablecoinService = require('./stablecoinService');
+const fs = require('fs');
+const path = require('path');
 
-class LiquidityManager {
+class LiquidityAudit {
     constructor() {
-        this.liquidityPool = {}; // Example structure: { 'ETH': 1000, 'DAI': 5000 }
+        this.auditFilePath = path.join(__dirname, 'liquidityAudit.json');
+        this.initializeAuditFile();
     }
 
-    // Add liquidity to the pool
-    async addLiquidity(asset, amount) {
-        if (!this.liquidityPool[asset]) {
-            this.liquidityPool[asset] = 0;
+    // Initialize the liquidity audit file
+    initializeAuditFile() {
+        if (!fs.existsSync(this.auditFilePath)) {
+            fs.writeFileSync(this.auditFilePath, JSON.stringify([])); // Create an empty array if file doesn't exist
         }
-        this.liquidityPool[asset] += amount;
-        console.log(`Added ${amount} of ${asset} to the liquidity pool.`);
-        // Here you would also handle the actual transfer of assets to the contract
     }
 
-    // Remove liquidity from the pool
-    async removeLiquidity(asset, amount) {
-        if (!this.liquidityPool[asset] || this.liquidityPool[asset] < amount) {
-            throw new Error(`Insufficient liquidity for ${asset}.`);
-        }
-        this.liquidityPool[asset] -= amount;
-        console.log(`Removed ${amount} of ${asset} from the liquidity pool.`);
-        // Here you would also handle the actual transfer of assets from the contract
+    // Log an addition of liquidity
+    logAddLiquidity(asset, amount, user) {
+        const auditEntry = {
+            action: 'addLiquidity',
+            asset,
+            amount,
+            user,
+            timestamp: new Date().toISOString(),
+        };
+        this.logAuditEntry(auditEntry);
     }
 
-    // Swap stablecoin for another asset
-    async swapStablecoinForAsset(stablecoinAmount, asset) {
-        const stablecoinPrice = await priceOracle.getPrice('your-stablecoin-id'); // Replace with actual stablecoin ID
-        const assetPrice = await priceOracle.getPrice(asset);
-        
-        const requiredAssetAmount = (stablecoinAmount * stablecoinPrice) / assetPrice;
-
-        if (this.liquidityPool[asset] < requiredAssetAmount) {
-            throw new Error(`Insufficient liquidity for swapping ${stablecoinAmount} stablecoins for ${asset}.`);
-        }
-
-        // Perform the swap logic
-        await stablecoinService.burnStablecoins(stablecoinAmount);
-        await this.removeLiquidity(asset, requiredAssetAmount);
-        console.log(`Swapped ${stablecoinAmount} stablecoins for ${requiredAssetAmount} of ${asset}.`);
+    // Log a removal of liquidity
+    logRemoveLiquidity(asset, amount, user) {
+        const auditEntry = {
+            action: 'removeLiquidity',
+            asset,
+            amount,
+            user,
+            timestamp: new Date().toISOString(),
+        };
+        this.logAuditEntry(auditEntry);
     }
 
-    // Swap an asset for stablecoin
-    async swapAssetForStablecoin(assetAmount, asset) {
-        const assetPrice = await priceOracle.getPrice(asset);
-        const stablecoinPrice = await priceOracle.getPrice('your-stablecoin-id'); // Replace with actual stablecoin ID
-        
-        const requiredStablecoinAmount = (assetAmount * assetPrice) / stablecoinPrice;
-
-        // Perform the swap logic
-        await this.addLiquidity(asset, assetAmount);
-        await stablecoinService.mintStablecoins(requiredStablecoinAmount);
-        console.log(`Swapped ${assetAmount} of ${asset} for ${requiredStablecoinAmount} stablecoins.`);
+    // Log a swap operation
+    logSwap(asset, stablecoinAmount, assetAmount, user) {
+        const auditEntry = {
+            action: 'swap',
+            asset,
+            stablecoinAmount,
+            assetAmount,
+            user,
+            timestamp: new Date().toISOString(),
+        };
+        this.logAuditEntry(auditEntry);
     }
 
-    // Get current liquidity pool status
-    getLiquidityPool() {
-        return this.liquidityPool;
+    // Log an audit entry to the file
+    logAuditEntry(entry) {
+        const auditHistory = this.getAuditHistory();
+        auditHistory.push(entry);
+        fs.writeFileSync(this.auditFilePath, JSON.stringify(auditHistory, null, 2));
+        console.log('Liquidity audit entry logged:', entry);
+    }
+
+    // Retrieve the audit history
+    getAuditHistory() {
+        const data = fs.readFileSync(this.auditFilePath);
+        return JSON.parse(data);
+    }
+
+    // Retrieve audit history for a specific user
+    getUser AuditHistory(userAddress) {
+        const history = this.getAuditHistory();
+        return history.filter(entry => entry.user === userAddress);
     }
 }
 
-module.exports = new LiquidityManager();
+module.exports = new LiquidityAudit();
